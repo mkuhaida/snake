@@ -9,7 +9,7 @@ namespace SnakeGame {
     class Snake {
         private const int InitialLength = 6;
         private const int InitialTimeRemaining = 200;
-        private const int BonusTimePerApple = 100;
+        private const int BonusTimePerApple = 200;
 
         public Board Board { get; }
         public Brain Brain { get; }

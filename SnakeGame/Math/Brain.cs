@@ -12,7 +12,7 @@ namespace SnakeGame
         public const int HiddenSize = 12;
         public const int OutputSize = 4;
 
-        public const float MutationChance = 0.03f;
+        public const float MutationChance = 0.02f;
 
         private Matrix inputToHidden;
         private Matrix hiddenToOutput;
