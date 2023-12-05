@@ -7,8 +7,8 @@ namespace SnakeGame
 {
     class Game
     {
-        public const int Worlds = 200;
-        public const int KeepTopN = 0;
+        public const int Worlds = 500;
+        public const int KeepTopN = 1;
 
         private IReadOnlyList<Board> boards;
         public static Board bestPreviousSnake;

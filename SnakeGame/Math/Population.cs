@@ -35,7 +35,7 @@ namespace SnakeGame {
         }
 
         private Brain ChooseParent() {
-            var bestParrents = scores.OrderByDescending(x => x.score).Take(80);
+            var bestParrents = scores.OrderByDescending(x => x.score).Take(100);
 
             double seed = Rng.GetDouble(0, bestParrents.Select(x => x.score).Sum());
 
