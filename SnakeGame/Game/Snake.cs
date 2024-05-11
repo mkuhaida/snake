@@ -26,12 +26,16 @@ namespace SnakeGame {
 
         public Pos Head => body[0];
 
-        public Snake (Board board) : this (board, Brain.Random ()) { }
+        public Snake (Board board) : this (board, Brain.Random (Game.block)) { }
 
         public Snake (Board board, Brain brain) {
             Board = board;
             Brain = brain;
             Pos pos = board.RandomPosition();
+            while (Board.BlockContains(pos))
+            {
+                pos = Board.RandomPosition();
+            }
             body = Enumerable.Repeat(pos, InitialLength).ToList();
         }
 
@@ -67,43 +71,62 @@ namespace SnakeGame {
         }
 
         private IReadOnlyList<float> GatherObservations() =>
+            Game.block ?
             Pos.EightDirections
-                .SelectMany (dir => new[]
+                .SelectMany(dir => new[]
+                {
+                    InverseDistanceToWall(dir),
+                    InverseDistanceToApple(dir),
+                    InverseDistanceToBody(dir),
+                    InverseDistanceToBlock(dir)
+                }).ToList()
+            : Pos.EightDirections
+                .SelectMany(dir => new[]
                 {
                     InverseDistanceToWall(dir),
                     InverseDistanceToApple(dir),
                     InverseDistanceToBody(dir)
-                }).ToList ();
+                }).ToList();
 
-        private float InverseDistanceToWall (Pos dir)
+
+        private float InverseDistanceToWall(Pos dir)
         {
             for (int i = 1; true; i++)
                 if (!Board.Contains(Head + dir * i))
                     return 1f / i;
         }
 
-        private float InverseDistanceToApple (Pos dir)
+        private float InverseDistanceToApple(Pos dir)
         {
             for (int i = 1; true; i++)
-                if (!Board.Contains(Head + dir * i) || body.Contains(Head + dir * i))
+                if (!Board.Contains(Head + dir * i))
                     return 0;
                 else if (Board.Apple == Head + dir * i)
                     return 1f / i;
         }
 
-        private float InverseDistanceToBody (Pos dir)
+        private float InverseDistanceToBody(Pos dir)
         {
             for (int i = 1; true; i++)
-                if (!Board.Contains(Head + dir * i) || Board.Apple == Head + dir * i)
+                if (!Board.Contains(Head + dir * i))
                     return 0;
                 else if (body.Contains(Head + dir * i))
+                    return 1f / i;
+        }
+
+        private float InverseDistanceToBlock(Pos dir)
+        {
+            for (int i = 1; true; i++)
+                if (!Board.Contains(Head + dir * i))
+                    return 0;
+                else if (Board.BlockContains(Head + dir * i))
                     return 1f / i;
         }
 
         private void Move (Pos dir)
         {
             Pos newHead = Head + dir;
-            if (!Board.Contains (newHead) || body.Contains (newHead) || TimeRemaining == 0)
+            if (!Board.Contains (newHead) || body.Contains (newHead) || TimeRemaining == 0 || Board.BlockContains(newHead))
             {
                 IsAlive = false;
                 return;

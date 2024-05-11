@@ -12,7 +12,7 @@ namespace SnakeGame
         public const int HiddenSize = 12;
         public const int OutputSize = 4;
 
-        public const float MutationChance = 0.05f;
+        public const float MutationChance = 0.02f;
 
         private Matrix inputToHidden;
         private Matrix hiddenToOutput;
@@ -23,10 +23,10 @@ namespace SnakeGame
             this.hiddenToOutput = hiddenToOutput;
         }
 
-        public static Brain Random() =>
+        public static Brain Random(bool block) =>
             new Brain(
-                Matrix.Random(HiddenSize, InputSize + 1),
-                Matrix.Random(OutputSize, HiddenSize + 1));
+                Matrix.Random(block ? 16 : HiddenSize, block ? 32 + 1 : InputSize + 1),
+                Matrix.Random(OutputSize, block ? 16 + 1 : HiddenSize + 1));
 
         public IReadOnlyList<float> Think(IReadOnlyList<float> inputs)
         {

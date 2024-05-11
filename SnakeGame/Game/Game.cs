@@ -7,11 +7,12 @@ namespace SnakeGame
 {
     class Game
     {
-        public const int Worlds = 500;
-        public const int KeepTopN = 1;
+        public const int Worlds = 200;
+        public const int KeepTopN = 0;
 
         private IReadOnlyList<Board> boards;
         public static Board bestPreviousSnake;
+        public static bool block = true;
         private bool replayBestSnake = true;
         private Font font;
         private int generation = 1;
@@ -34,6 +35,11 @@ namespace SnakeGame
         public void Draw(Graphics g)
         {
             Board.Clear (g);
+            if (block)
+            {
+                Board.DrawBlock(g);
+            }
+
             if (!replayBestSnake)
             {
                 foreach (Board board in boards)

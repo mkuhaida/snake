@@ -6,17 +6,15 @@ using System.Threading.Tasks;
 
 namespace SnakeGame {
     class Population {
-        private readonly IReadOnlyList<(Brain brain, double score, int apples)> scores;
-        private readonly double totalScore;
+        private readonly IReadOnlyList<(Brain brain, double score)> scores;
         private double bestScore;
 
         //public 
 
         public Population (IEnumerable<Snake> snakes) {
             scores = snakes
-                .Select(snake => (snake.Brain, snake.Score, snake.Apples))
+                .Select(snake => (snake.Brain, snake.Score))
                 .ToList();
-            totalScore = scores.Select(x => x.score).Sum();
             bestScore = scores.Select(x => x.score).Max();
         }
 
@@ -35,11 +33,11 @@ namespace SnakeGame {
         }
 
         private Brain ChooseParent() {
-            var bestParrents = scores.OrderByDescending(x => x.score).Take(100);
+            var bestParrents = scores.OrderByDescending(x => x.score).Take(50);
 
             double seed = Rng.GetDouble(0, bestParrents.Select(x => x.score).Sum());
 
-            foreach ((Brain brain, double score, int apples) pair in bestParrents) {
+            foreach ((Brain brain, double score) pair in bestParrents) {
                 seed -= pair.score;
                 if (seed < 0)
                     return pair.brain;

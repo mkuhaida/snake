@@ -42,6 +42,10 @@ namespace SnakeGame {
             if (Game.bestPreviousSnake == null)
             {
                 Apple = RandomPosition();
+                while (BlockContains(Apple))
+                {
+                    Apple = RandomPosition();
+                }
                 ApplesForReplay.Enqueue(Apple);
             }
             else
@@ -50,6 +54,15 @@ namespace SnakeGame {
             }
 
 
+        }
+        public static void DrawBlock(Graphics g)
+        {
+            g.FillRectangle(Brushes.Gray, 12 * Size, 10 * Size, 4 * Size, 16 * Size);
+        }
+
+        public bool BlockContains(Pos pos)
+        {
+            return pos.X >= 12 && pos.Y >= 10 && pos.X < 16 && pos.Y < 26;
         }
 
         public Pos RandomPosition() => new Pos (
